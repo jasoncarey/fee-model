@@ -17,7 +17,7 @@ coinflow_fee_pct = st.sidebar.slider("Provider Fee (%)", 0.0, 10.0, 2.9, step=0.
 coinflow_fee_fixed = st.sidebar.slider(
     "Fixed Fee ($)", 0.0, 1.0, 0.30, step=0.05
 )
-house_edge_pct = st.sidebar.slider("House Edge (%)", 0.5, 10.0, 2.0, step=0.5)
+house_edge_pct = st.sidebar.slider("House Edge (%)", 0.5, 5.0, 2.0, step=0.1)
 redemption_fee_cap_pct = st.sidebar.slider(
     "Redemption Fee Cap (%)", 0.0, 10.0, 5.0, step=0.5
 )
