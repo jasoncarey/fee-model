@@ -13,7 +13,7 @@ st.markdown(
 st.sidebar.header("Parameters")
 
 deposit_amount = st.sidebar.slider("Deposit Amount ($)", 0, 9000, 100, step=50)
-coinflow_fee_pct = st.sidebar.slider("Coinflow Fee (%)", 0.0, 10.0, 2.9, step=0.1)
+coinflow_fee_pct = st.sidebar.slider("Provider Fee (%)", 0.0, 10.0, 2.9, step=0.1)
 coinflow_fee_fixed = st.sidebar.slider(
     "Fixed Fee ($)", 0.0, 1.0, 0.30, step=0.05
 )
