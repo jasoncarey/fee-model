@@ -95,7 +95,7 @@ for d in deposits:
     profit = cashback_2pct - fee
     rows.append({
         "Deposit": d,
-        "Coinflow Fee": round(fi, 2),
+        "Fee": round(fi, 2),
         "Theo Edge": round(te, 2),
         "Uncovered": round(uc, 2),
         "Fee Charged": round(fee, 2),
