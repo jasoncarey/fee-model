@@ -15,7 +15,7 @@ st.sidebar.header("Parameters")
 deposit_amount = st.sidebar.slider("Deposit Amount ($)", 0, 9000, 100, step=50)
 coinflow_fee_pct = st.sidebar.slider("Coinflow Fee (%)", 0.0, 10.0, 2.9, step=0.1)
 coinflow_fee_fixed = st.sidebar.slider(
-    "Coinflow Fixed Fee ($)", 0.0, 1.0, 0.30, step=0.05
+    "Fixed Fee ($)", 0.0, 1.0, 0.30, step=0.05
 )
 house_edge_pct = st.sidebar.slider("House Edge (%)", 0.5, 10.0, 2.0, step=0.5)
 redemption_fee_cap_pct = st.sidebar.slider(
@@ -61,7 +61,7 @@ st.header("Scenario Breakdown")
 
 col1, col2, col3 = st.columns(3)
 col1.metric("Deposit", f"${deposit_amount:.2f}")
-col2.metric("Coinflow Fee (our cost)", f"${fee_incurred:.2f}")
+col2.metric("Fee (our cost)", f"${fee_incurred:.2f}")
 col3.metric("Total Wagered", f"${total_wagered:.2f}")
 
 col1, col2, col3 = st.columns(3)
