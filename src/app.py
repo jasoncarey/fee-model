@@ -5,7 +5,8 @@ import pandas as pd
 st.title("Coinflow Fiat Redemption Fee Model")
 
 st.markdown(
-    "**Formula:** `processing_fee = min(cap% * redemption_amount, max(0, fee_incurred - max(theoretical_edge, losses)))`"
+#    "**Formula:** `processing_fee = min(cap% * redemption_amount, max(0, fee_incurred - max(theoretical_edge, losses)))`"
+    "**Formula:** `fee = max(0, min(cap% * redemption, fee_incurred - max(theo_edge, losses))`"
 )
 
 # --- Inputs ---
