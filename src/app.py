@@ -22,7 +22,7 @@ redemption_fee_cap_pct = st.sidebar.slider(
     "Redemption Fee Cap (%)", 0.0, 10.0, 5.0, step=0.1
 )
 
-cashback_pct = st.sidebar.slider("Cashback Card (%)", 0.0, 5.0, 2.0, step=0.5)
+cashback_pct = st.sidebar.slider("Cashback Card (%)", 0.0, 5.0, 2.0, step=0.1)
 
 # Playthrough multiplier: how many times the deposit is wagered
 playthrough = st.sidebar.slider("Playthrough Multiplier (x)", 1.0, 20.0, 1.0, step=0.5)
