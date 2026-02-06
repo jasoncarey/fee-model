@@ -75,9 +75,10 @@ col2.metric("Processing Fee Charged", f"${processing_fee:.2f}")
 col3.metric("Net to Player", f"${net_redemption:.2f}")
 
 # --- Abuser Scenario Table ---
-st.header("Abuser Analysis: 1x Playthrough, Break-Even Player")
+st.header("Abuser Analysis: 1x Playthrough, Average Player")
 st.markdown(
-    "Shows fee across deposit amounts for a player who wagers 1x and withdraws everything."
+    "Shows expected abuser profit assuming statistical average losses (house edge). "
+    "Over many attempts, every player converges to this."
 )
 
 deposits = np.arange(50, 9050, 50)
@@ -86,20 +87,20 @@ for d in deposits:
     fi = d * (provider_fee_pct / 100) + provider_fee_fixed
     tw = d * 1.0  # 1x playthrough
     te = tw * (house_edge_pct / 100)
-    losses = 0  # break-even player (worst case abuser)
-    redemption = d  # they withdraw everything
-    uc = max(0, fi - max(te, losses))
+    losses = te  # average player loses the expected edge
+    redemption = d - losses
+    uc = max(0, fi - losses)
     cap = redemption_fee_cap_pct / 100 * redemption
     fee = min(cap, uc)
-    cashback_2pct = d * (cashback_pct / 100)  # typical cashback
-    profit = cashback_2pct - fee
+    cashback = d * (cashback_pct / 100)
+    profit = cashback - fee - losses
     rows.append({
         "Deposit": d,
         "Provider Cost": round(fi, 2),
-        "Theo Edge": round(te, 2),
+        "Edge Loss": round(losses, 2),
         "Uncovered": round(uc, 2),
         "Fee Charged": round(fee, 2),
-        f"Cashback ({cashback_pct}%)": round(cashback_2pct, 2),
+        f"Cashback ({cashback_pct}%)": round(cashback, 2),
         "Abuser Profit": round(profit, 2),
     })
 
@@ -111,3 +112,64 @@ if len(profitable) > 0:
     st.warning(f"Abuser is profitable at {len(profitable)}/{len(df)} deposit levels")
 else:
     st.success("Abuser is unprofitable at all deposit levels with this fee structure")
+
+# --- Break-Even Curve ---
+st.header("Break-Even Analysis by Deposit")
+st.markdown(
+    "Shows expected abuser profit as a % of deposit. "
+    "Assumes average player who loses the house edge over time."
+)
+
+import altair as alt
+
+curve_rows = []
+for d in deposits:
+    if d == 0:
+        continue
+    fi = d * (provider_fee_pct / 100) + provider_fee_fixed
+    te = d * (house_edge_pct / 100)
+    losses = te
+    redemption = d - losses
+    uc = max(0, fi - losses)
+    cap = redemption_fee_cap_pct / 100 * redemption
+    fee = min(cap, uc)
+    cashback = d * (cashback_pct / 100)
+    profit = cashback - fee - losses
+    profit_pct = (profit / d) * 100
+    curve_rows.append({
+        "Deposit": d,
+        "Abuser Profit (%)": round(profit_pct, 3),
+    })
+
+curve_df = pd.DataFrame(curve_rows)
+
+line = alt.Chart(curve_df).mark_line(color="#1f77b4").encode(
+    x=alt.X("Deposit:Q", title="Deposit ($)"),
+    y=alt.Y("Abuser Profit (%):Q", title="Abuser Profit (% of Deposit)"),
+    tooltip=["Deposit", "Abuser Profit (%)"],
+)
+
+zero_line = alt.Chart(curve_df).mark_rule(
+    strokeDash=[5, 5], color="#e45756"
+).encode(y=alt.datum(0))
+
+st.altair_chart(line + zero_line, use_container_width=True)
+
+st.caption(
+    "Blue = expected abuser profit % · "
+    "Red dashed = break-even line"
+)
+
+# Find crossover point
+crossover = None
+for row in curve_rows:
+    if row["Abuser Profit (%)"] > 0:
+        crossover = row["Deposit"]
+        break
+
+if crossover:
+    st.warning(
+        f"Abuser becomes profitable above ${crossover} deposits."
+    )
+else:
+    st.success("Abuser is unprofitable at all deposit levels in expectation.")
