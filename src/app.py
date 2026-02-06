@@ -13,9 +13,9 @@ st.markdown(
 st.sidebar.header("Parameters")
 
 deposit_amount = st.sidebar.slider("Deposit Amount ($)", 0, 9000, 100, step=50)
-coinflow_fee_pct = st.sidebar.slider("Provider Fee (%)", 0.0, 10.0, 2.9, step=0.1)
-coinflow_fee_fixed = st.sidebar.slider(
-    "Fixed Fee ($)", 0.0, 1.0, 0.30, step=0.05
+provider_fee_pct = st.sidebar.slider("Provider Fee (%)", 0.0, 10.0, 2.9, step=0.1)
+provider_fee_fixed = st.sidebar.slider(
+    "Provider Fixed Fee ($)", 0.0, 1.0, 0.30, step=0.05
 )
 house_edge_pct = st.sidebar.slider("House Edge (%)", 0.5, 5.0, 2.0, step=0.1)
 redemption_fee_cap_pct = st.sidebar.slider(
@@ -28,7 +28,7 @@ cashback_pct = st.sidebar.slider("Cashback Card (%)", 0.0, 5.0, 2.0, step=0.5)
 playthrough = st.sidebar.slider("Playthrough Multiplier (x)", 1.0, 20.0, 1.0, step=0.5)
 
 # --- Derived Values ---
-fee_incurred = deposit_amount * (coinflow_fee_pct / 100) + coinflow_fee_fixed
+fee_incurred = deposit_amount * (provider_fee_pct / 100) + provider_fee_fixed
 total_wagered = deposit_amount * playthrough
 theoretical_edge = total_wagered * (house_edge_pct / 100)
 
@@ -61,7 +61,7 @@ st.header("Scenario Breakdown")
 
 col1, col2, col3 = st.columns(3)
 col1.metric("Deposit", f"${deposit_amount:.2f}")
-col2.metric("Fee (our cost)", f"${fee_incurred:.2f}")
+col2.metric("Provider Cost", f"${fee_incurred:.2f}")
 col3.metric("Total Wagered", f"${total_wagered:.2f}")
 
 col1, col2, col3 = st.columns(3)
@@ -83,7 +83,7 @@ st.markdown(
 deposits = np.arange(50, 9050, 50)
 rows = []
 for d in deposits:
-    fi = d * (coinflow_fee_pct / 100) + coinflow_fee_fixed
+    fi = d * (provider_fee_pct / 100) + provider_fee_fixed
     tw = d * 1.0  # 1x playthrough
     te = tw * (house_edge_pct / 100)
     losses = 0  # break-even player (worst case abuser)
@@ -95,7 +95,7 @@ for d in deposits:
     profit = cashback_2pct - fee
     rows.append({
         "Deposit": d,
-        "Fee": round(fi, 2),
+        "Provider Cost": round(fi, 2),
         "Theo Edge": round(te, 2),
         "Uncovered": round(uc, 2),
         "Fee Charged": round(fee, 2),
