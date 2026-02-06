@@ -19,7 +19,7 @@ provider_fee_fixed = st.sidebar.slider(
 )
 house_edge_pct = st.sidebar.slider("House Edge (%)", 0.5, 5.0, 2.0, step=0.1)
 redemption_fee_cap_pct = st.sidebar.slider(
-    "Redemption Fee Cap (%)", 0.0, 10.0, 5.0, step=0.5
+    "Redemption Fee Cap (%)", 0.0, 10.0, 5.0, step=0.1
 )
 
 cashback_pct = st.sidebar.slider("Cashback Card (%)", 0.0, 5.0, 2.0, step=0.5)
