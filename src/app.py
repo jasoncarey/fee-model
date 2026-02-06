@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 
-st.title("Coinflow Fiat Redemption Fee Model")
+st.title("Fiat Redemption Fee Model")
 
 st.markdown(
 #    "**Formula:** `processing_fee = min(cap% * redemption_amount, max(0, fee_incurred - max(theoretical_edge, losses)))`"
