@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -12,15 +11,17 @@ st.markdown(
 # --- Inputs ---
 st.sidebar.header("Parameters")
 
-deposit_amount = st.sidebar.slider("Deposit Amount ($)", 10, 5000, 100, step=10)
-coinflow_fee_pct = st.sidebar.slider("Coinflow Fee (%)", 1.0, 5.0, 2.9, step=0.1)
+deposit_amount = st.sidebar.slider("Deposit Amount ($)", 0, 9000, 100, step=50)
+coinflow_fee_pct = st.sidebar.slider("Coinflow Fee (%)", 0.0, 10.0, 2.9, step=0.1)
 coinflow_fee_fixed = st.sidebar.slider(
     "Coinflow Fixed Fee ($)", 0.0, 1.0, 0.30, step=0.05
 )
 house_edge_pct = st.sidebar.slider("House Edge (%)", 0.5, 10.0, 2.0, step=0.5)
 redemption_fee_cap_pct = st.sidebar.slider(
-    "Redemption Fee Cap (%)", 1.0, 10.0, 5.0, step=0.5
+    "Redemption Fee Cap (%)", 0.0, 10.0, 5.0, step=0.5
 )
+
+cashback_pct = st.sidebar.slider("Cashback Card (%)", 0.0, 5.0, 2.0, step=0.5)
 
 # Playthrough multiplier: how many times the deposit is wagered
 playthrough = st.sidebar.slider("Playthrough Multiplier (x)", 1.0, 20.0, 1.0, step=0.5)
@@ -78,7 +79,7 @@ st.markdown(
     "Shows fee across deposit amounts for a player who wagers 1x and withdraws everything."
 )
 
-deposits = np.arange(25, 2025, 25)
+deposits = np.arange(50, 9050, 50)
 rows = []
 for d in deposits:
     fi = d * (coinflow_fee_pct / 100) + coinflow_fee_fixed
@@ -89,7 +90,7 @@ for d in deposits:
     uc = max(0, fi - max(te, losses))
     cap = redemption_fee_cap_pct / 100 * redemption
     fee = min(cap, uc)
-    cashback_2pct = d * 0.02  # typical cashback
+    cashback_2pct = d * (cashback_pct / 100)  # typical cashback
     profit = cashback_2pct - fee
     rows.append({
         "Deposit": d,
@@ -97,7 +98,7 @@ for d in deposits:
         "Theo Edge": round(te, 2),
         "Uncovered": round(uc, 2),
         "Fee Charged": round(fee, 2),
-        "Cashback (2%)": round(cashback_2pct, 2),
+        f"Cashback ({cashback_pct}%)": round(cashback_2pct, 2),
         "Abuser Profit": round(profit, 2),
     })
 
